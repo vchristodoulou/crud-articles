@@ -1,0 +1,5 @@
+# IDEs and editors
+server/.idea
+
+# dependencies
+server/node_modules
