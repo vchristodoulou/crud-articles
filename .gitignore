@@ -1,5 +1,7 @@
 # IDEs and editors
 server/.idea
+client/.idea
 
 # dependencies
 server/node_modules
+client/node_modules
