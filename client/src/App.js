@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Articles from "./components/Articles"
 import ArticleCreate from "./components/Articles/create";
 import ArticleView from "./components/Articles/view";
+import ArticleEdit from "./components/Articles/edit";
 import "./App.css";
 
 
@@ -38,17 +39,11 @@ class App extends Component {
                   </Link>
                 </div>
               </div>
-              <div className="navbar-nav mr-auto">
-                <li className="nav-item">
-                  <Link to={"/admin"} className="nav-link">
-                    Admin
-                  </Link>
-                </li>
-              </div>
             </nav>
 
             <Route exact path={["/", "/articles"]} component={Articles}/>
             <Route exact path={["/articles/:articleId"]} component={ArticleView}/>
+            <Route exact path={["/articles/edit/:title"]} component={ArticleEdit}/>
             <Route exact path={["/create_article"]} component={ArticleCreate}/>
 
           </div>
