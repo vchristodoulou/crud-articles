@@ -11,6 +11,7 @@ export default class ArticleCreate extends Component {
             title: '',
             content: '',
             description: '',
+            createResponse: '',
             error: ''
         };
 
@@ -48,11 +49,17 @@ export default class ArticleCreate extends Component {
                 this.setState({
                     title: '',
                     content: '',
-                    description: ''
+                    description: '',
+                    createResponse: 'SUCCESS'
                 });
+                setTimeout(
+                    () => this.setState({ createResponse: '' }),
+                    3000
+                );
             },
             error => {
                 this.setState({
+                    createResponse: 'ERROR',
                     error:
                         (error.response &&
                             error.response.data &&
@@ -60,6 +67,10 @@ export default class ArticleCreate extends Component {
                         error.message ||
                         error.toString()
                 });
+                setTimeout(
+                    () => this.setState({ createResponse: '' }),
+                    3000
+                );
             }
         );
     }
@@ -68,26 +79,55 @@ export default class ArticleCreate extends Component {
         return (
             <div className="container mt-3">
                 <div className="row justify-content-center">
-                <div className="col-4">
-                    <form onSubmit={this.handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="create_title">Title</label>
-                            <input className="form-control" type="text" id="create_title" required
-                                   value={this.state.title} onChange={this.handleChangeTitle} />
+                    <div className="col-6">
+                        <div className="card">
+                            <div className="card-header">
+                                <h4 className="mb-0">Create Article</h4>
+                            </div>
+                            <div className="card-body">
+                                <form onSubmit={this.handleSubmit}>
+                                    <div className="form-group row">
+                                        <label
+                                            className="col-3 col-form-label form-control-label"
+                                            htmlFor="create_title"
+                                        >Title</label>
+                                        <input
+                                            className="form-control col-8" type="text" id="create_title" required
+                                            value={this.state.title} onChange={this.handleChangeTitle} />
+                                    </div>
+                                    <div className="form-group row">
+                                        <label
+                                            className="col-3 col-form-label form-control-label mt-4"
+                                            htmlFor="create_content"
+                                        >Content</label>
+                                        <textarea
+                                            className="form-control col-8" id="create_content" rows="3" required
+                                            value={this.state.content} onChange={this.handleChangeContent} />
+                                    </div>
+                                    <div className="form-group row">
+                                        <label
+                                            className="col-3 col-form-label form-control-label mt-4"
+                                            htmlFor="create_description"
+                                        >Description</label>
+                                        <textarea
+                                            className="form-control col-8" id="create_description" rows="3"
+                                            value={this.state.description} onChange={this.handleChangeDescription} />
+                                    </div>
+                                    <button className="btn btn-primary mt-2" type="submit">Submit</button>
+                                    {this.state.createResponse === 'SUCCESS' &&
+                                        <div className="alert alert-success alert-dismissible fade show mt-2" role="alert">
+                                            <p className="text-center">Created successfully!</p>
+                                        </div>
+                                    }
+                                    {this.state.createResponse === 'ERROR' &&
+                                        <div className="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+                                            <p className="text-center">{this.state.error}</p>
+                                        </div>
+                                    }
+                                </form>
+                            </div>
                         </div>
-                        <div className="form-group">
-                            <label htmlFor="create_content">Content</label>
-                            <textarea className="form-control" id="create_content" rows="3" required
-                                      value={this.state.content} onChange={this.handleChangeContent} />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="create_description">Description</label>
-                            <textarea className="form-control" id="create_description" rows="3"
-                                      value={this.state.description} onChange={this.handleChangeDescription} />
-                        </div>
-                        <button className="btn btn-primary" type="submit">Submit</button>
-                    </form>
-                </div>
+                    </div>
                 </div>
             </div>
         );

@@ -12,6 +12,7 @@ export default class ArticleEdit extends Component {
             title: '',
             content: '',
             description: '',
+            editResponse: '',
             error: ''
         };
 
@@ -35,11 +36,17 @@ export default class ArticleEdit extends Component {
                         id: response.data._id,
                         title: response.data.title,
                         content: response.data.content,
-                        description: response.data.description
+                        description: response.data.description,
+                        editResponse: 'SUCCESS'
                     });
+                    setTimeout(
+                        () => this.setState({ editResponse: '' }),
+                        3000
+                    );
                 },
                 error => {
                     this.setState({
+                        editResponse: 'ERROR',
                         error:
                             (error.response &&
                                 error.response.data &&
@@ -47,6 +54,10 @@ export default class ArticleEdit extends Component {
                             error.message ||
                             error.toString()
                     });
+                    setTimeout(
+                        () => this.setState({ editResponse: '' }),
+                        3000
+                    );
                 }
 
             )
@@ -103,7 +114,17 @@ export default class ArticleEdit extends Component {
                         <textarea className="form-control" rows="10"
                                   value={this.state.content} onChange={this.handleChangeContent} />
                     </div>
-                    <button className="btn btn-primary" type="submit">Submit</button>
+                    <button className="btn btn-primary" type="submit">Save</button>
+                    {this.state.editResponse === 'SUCCESS' &&
+                        <div className="alert alert-success alert-dismissible fade show mt-2" role="alert">
+                            <p className="text-center">Saved successfully!</p>
+                        </div>
+                    }
+                    {this.state.editResponse === 'ERROR' &&
+                        <div className="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+                            <p className="text-center">{this.state.error}</p>
+                        </div>
+                    }
                 </form>
             </div>
         );
