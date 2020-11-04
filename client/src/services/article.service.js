@@ -9,6 +9,10 @@ class ArticleService {
         return axios.get(`${API_URL}articles/`);
     }
 
+    getWithContent() {
+        return axios.get(`${API_URL}articles/?content=true`);
+    }
+
     getById(id) {
         return axios.get(`${API_URL}articles/${id}`);
     }
@@ -18,7 +22,6 @@ class ArticleService {
     }
 
     getByTitle(title) {
-        console.log(`${API_URL}articles/title/${title}`);
         return axios.get(`${API_URL}articles/title/${title}`);
     }
 
@@ -28,6 +31,18 @@ class ArticleService {
 
     create(article) {
         return axios.post(`${API_URL}articles/`, article);
+    }
+
+    edit(title, content) {
+        return axios.post(`${API_URL}articles/edit/${title}`, {content: content});
+    }
+
+    deleteById(id) {
+        return axios.delete(`${API_URL}articles/${id}`);
+    }
+
+    deleteByTitle(title) {
+        return axios.delete(`${API_URL}articles/title/${title}`);
     }
 }
 
