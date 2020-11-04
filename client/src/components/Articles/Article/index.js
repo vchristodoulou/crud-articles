@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import { Link } from "react-router-dom";
 
-import ArticleDelete from "../delete";
+import ArticleService from "../../../services/article.service";
 
 
 export default class Article extends Component {
@@ -10,11 +10,43 @@ export default class Article extends Component {
         super(props);
     }
 
+    onDeleteById() {
+        if (window.confirm("Are you sure? This will delete the article and all the data related to it!")) {
+            ArticleService.deleteById(this.props.id)
+                .then(
+                    response => {
+                        console.log(response);
+                        this.props.onDeleteArticle(this.props.id);
+                    },
+                    error => {
+                        console.log(error);
+                    }
+
+                )
+        }
+    }
+
+    onDeleteByTitle() {
+        if (window.confirm("Are you sure? This will delete the article and all the data related to it!")) {
+            ArticleService.deleteByTitle(this.props.title)
+                .then(
+                    response => {
+                        console.log(response);
+                        this.props.onDeleteArticle(this.props.id);
+                    },
+                    error => {
+                        console.log(error);
+                    }
+
+                )
+        }
+    }
+
     render() {
         const  { id, title, content, description } = this.props;
 
         return (
-            <div className="col-md-4">
+            <div className="col-12">
                 <div className="card mb-4 box-shadow">
                     <h5 className="card-header">{title}</h5>
                     <div className="card-body">
@@ -43,11 +75,19 @@ export default class Article extends Component {
                                 >Edit
                                 </Link>
 
-                                <button className="btn btn-sm btn-outline-secondary" type="button" data-toggle="modal"
-                                        data-target={`#deleteArticleModal${id}`}>
-                                    Delete
-                                </button>
-                                <ArticleDelete id={id} title={title} />
+                                <div className="dropdown">
+                                    <button className="tn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                            id="dropdownDelete" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                        Delete
+                                    </button>
+                                    <div className="dropdown-menu" aria-labelledby="dropdownDelete">
+                                        <button className="dropdown-item" onClick={() => this.onDeleteById()}
+                                        >By Id</button>
+                                        <button className="dropdown-item" onClick={() => this.onDeleteByTitle()}
+                                        >By Title</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
