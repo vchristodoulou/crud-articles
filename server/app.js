@@ -9,20 +9,20 @@ const cors = require('cors')
 const dbConfig = require('./database/db')
 const indexRouter = require('./routes/index');
 const articlesRouter = require('./routes/article.route')
+const categoryRouter = require('./routes/category.route')
 
 
 // Connecting to mongoDB Database
 mongoose.Promise = global.Promise;
-mongoose.connect(dbConfig.db, {
-  useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-      console.log('Database sucessfully connected!')
-    },
-    error => {
-      console.log('Could not connect to database : ' + error)
-    }
-)
+mongoose.connect(dbConfig.db, {useNewUrlParser: true, useUnifiedTopology: true})
+    .then(
+        () => {
+            console.log('Database sucessfully connected!')
+        },
+        error => {
+            console.log('Could not connect to database : ' + error)
+        }
+    );
 
 const app = express();
 
@@ -38,7 +38,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/api/articles', articlesRouter)
+app.use('/api/articles', articlesRouter);
+app.use('/api/categories', categoryRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
