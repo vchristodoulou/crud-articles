@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import queryString from 'query-string';
+
 import ArticleService from "../../../services/article.service";
 
 
@@ -16,10 +18,8 @@ export default class ArticleView extends Component {
         };
     }
 
-    componentDidMount() {
-        const { articleId } = this.props.match.params;
-
-        ArticleService.getById(articleId).then(
+    getArticleSuccess() {
+        return (
             response => {
                 this.setState({
                     id: response.data._id,
@@ -27,7 +27,12 @@ export default class ArticleView extends Component {
                     content: response.data.content,
                     description: response.data.description
                 });
-            },
+            }
+        )
+    }
+
+    getArticleError() {
+        return (
             error => {
                 this.setState({
                     error:
@@ -38,7 +43,26 @@ export default class ArticleView extends Component {
                         error.toString()
                 });
             }
-        );
+        )
+    }
+
+    componentDidMount() {
+        const { articleId } = this.props.match.params;
+        let queryParams = queryString.parse(this.props.location.search)
+
+        if (queryParams.content) {
+            ArticleService.getByIdWithContent(articleId)
+                .then(
+                    this.getArticleSuccess(),
+                    this.getArticleError()
+                );
+        } else {
+            ArticleService.getById(articleId)
+                .then(
+                    this.getArticleSuccess(),
+                    this.getArticleError()
+                );
+        }
     }
 
     render() {
