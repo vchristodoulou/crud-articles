@@ -5,6 +5,8 @@ import Articles from "./components/Articles"
 import ArticleCreate from "./components/Articles/create";
 import ArticleView from "./components/Articles/view";
 import ArticleEdit from "./components/Articles/edit";
+import CategoryCreate from "./components/Categories/create";
+import CategoryDelete from "./components/Categories/delete";
 import "./App.css";
 
 
@@ -30,13 +32,15 @@ class App extends Component {
               </div>
               <div className="dropdown">
                 <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Admin Articles
-                </button>
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                >Admin actions</button>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <Link to={"/create_article"} className="dropdown-item">
-                    Create
-                  </Link>
+                  <Link to={"/admin/create_article"} className="dropdown-item"
+                  >Create Article</Link>
+                  <Link to={"/admin/create_category"} className="dropdown-item"
+                  >Create Category</Link>
+                  <Link to={"/admin/delete_category"} className="dropdown-item"
+                  >Delete Category</Link>
                 </div>
               </div>
             </nav>
@@ -44,7 +48,9 @@ class App extends Component {
             <Route exact path={["/", "/articles"]} component={Articles}/>
             <Route exact path={["/articles/:articleId"]} component={ArticleView}/>
             <Route exact path={["/articles/edit/:title"]} component={ArticleEdit}/>
-            <Route exact path={["/create_article"]} component={ArticleCreate}/>
+            <Route exact path={["/admin/create_article"]} component={ArticleCreate}/>
+            <Route exact path={["/admin/create_category"]} component={CategoryCreate}/>
+            <Route exact path={["/admin/delete_category"]} component={CategoryDelete}/>
 
           </div>
         </Router>
