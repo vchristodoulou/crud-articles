@@ -3,12 +3,16 @@ const Schema = mongoose.Schema;
 
 const articlesSchema = new Schema({
     title: {
-        type: String
+        type: String,
+        unique: true
     },
     content: {
         type: String
     },
     description: {
+        type: String
+    },
+    category_name: {
         type: String
     }
 }, {
@@ -19,13 +23,15 @@ const articlesWithContent = {
     _id: true,
     title: true,
     content: true,
-    description: true
+    description: true,
+    category_name: true
 }
 
 const articlesNoContent = {
     _id: true,
     title: true,
-    description: true
+    description: true,
+    category_name: true
 }
 
 module.exports = {

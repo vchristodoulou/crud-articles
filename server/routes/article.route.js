@@ -7,7 +7,7 @@ let { articleModel, articlesWithContent, articlesNoContent } = require('../model
 
 // CREATE article
 router.route('/').post((req, res, next) => {
-    const { title, content, description } = req.body
+    const { title, content, description, category_name } = req.body
 
     if (!title || !content) {
         return res.status(400).send('TITLE and CONTENT are required');
@@ -15,6 +15,10 @@ router.route('/').post((req, res, next) => {
 
     if (!description) {
         req.body.description = null;
+    }
+
+    if (!category_name) {
+        req.body.category_name = null;
     }
 
     articleModel.create(req.body, (error, data) => {
@@ -29,8 +33,9 @@ router.route('/').post((req, res, next) => {
 
 // GET articles
 router.route('/').get((req, res, next) => {
-    const { content } = req.query;
+    const { content, category } = req.query;
     let articlesProjection;
+    let findByCategory;
 
     if (content) {
         articlesProjection = articlesWithContent
@@ -38,7 +43,13 @@ router.route('/').get((req, res, next) => {
         articlesProjection = articlesNoContent
     }
 
-    articleModel.find({}, articlesProjection, (error, data) => {
+    if (category) {
+        findByCategory = {category_name: category}
+    } else {
+        findByCategory = {}
+    }
+
+    articleModel.find(findByCategory, articlesProjection, (error, data) => {
         if (error) {
             return next(error);
         } else {
