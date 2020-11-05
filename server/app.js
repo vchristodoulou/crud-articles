@@ -45,6 +45,7 @@ app.use('/api/articles', articlesRouter);
 app.use('/api/categories', categoryRouter);
 
 app.use('/', (req, res, next) => {
+    console.log(req);
     res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
