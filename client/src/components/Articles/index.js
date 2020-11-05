@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import qs from 'query-string';
+
 import Article from "./Article";
 import ArticleService from "../../services/article.service";
 import CategoryService from "../../services/category.service"
@@ -13,11 +15,14 @@ export default class Articles extends Component {
         this.state = {
             articles: [],
             categories: [],
+            noContentOption: '',
+            selectedCategoryName: '',
             error: ''
         };
 
         this.onDeleteArticle = this.onDeleteArticle.bind(this);
         this.onChangeContentRadio = this.onChangeContentRadio.bind(this);
+        this.onChangeCategory = this.onChangeCategory.bind(this);
     }
 
     onDeleteArticle(id) {
@@ -30,11 +35,22 @@ export default class Articles extends Component {
 
     onChangeContentRadio(event) {
         // console.log(event.target.value);
+        // console.log(this.state.noContentOption);
         if (event.target.value === 'noContent') {
-            this.getArticles();
+            if (!this.state.noContentOption) {
+                this.setState({noContentOption: true});
+                this.getArticles();
+            }
         } else if (event.target.value === 'withContent') {
-            this.getArticlesWithContent();
+            if (this.state.noContentOption) {
+                this.setState({noContentOption: false});
+                this.getArticlesWithContent();
+            }
         }
+    }
+
+    onChangeCategory(e) {
+        this.setState({selectedCategoryName: e.target.value});
     }
 
     getArticlesSuccess() {
@@ -70,8 +86,24 @@ export default class Articles extends Component {
             );
     }
 
+    getArticlesWithCategory(category) {
+        ArticleService.getWithCategory(category)
+            .then(
+                this.getArticlesSuccess(),
+                this.getArticlesError
+            );
+    }
+
     getArticlesWithContent() {
         ArticleService.getWithContent()
+            .then(
+                this.getArticlesSuccess(),
+                this.getArticlesError
+            );
+    }
+
+    getArticlesWithContentAndCategory(category) {
+        ArticleService.getWithContentAndCategory(category)
             .then(
                 this.getArticlesSuccess(),
                 this.getArticlesError
@@ -82,7 +114,7 @@ export default class Articles extends Component {
         CategoryService.get()
             .then(
                 response => {
-                    console.log(response.data);
+                    // console.log(response.data);
                     this.setState({
                         categories: response.data
                     });
@@ -101,26 +133,60 @@ export default class Articles extends Component {
     }
 
     componentDidMount() {
-        this.getArticles();
+        let queryParams = qs.parse(this.props.location.search);
+
         this.getCategories();
+
+        if (queryParams.content) {
+            this.setState({noContentOption: false});
+            if (queryParams.category) {
+                this.setState({selectedCategoryName: queryParams.category});
+                this.getArticlesWithContentAndCategory(queryParams.category);
+            } else {
+                this.getArticlesWithContent();
+            }
+        } else {
+            this.setState({noContentOption: true});
+            if (queryParams.category) {
+                this.setState({selectedCategoryName: queryParams.category});
+                this.getArticlesWithCategory(queryParams.category);
+            } else {
+                this.getArticles();
+            }
+        }
     }
 
     render() {
+        // console.log(this.props.location.pathname, this.props.location.search);
+        // let searchParams = new URLSearchParams(this.props.location.search);
+        // console.log(searchParams);
+        // searchParams.set('content', 'TRUE');
+        // console.log(searchParams.toString());
+        // this.props.history.push({
+        //     pathname: this.props.location.pathname,
+        //     search: searchParams.toString()
+        // });
         return (
             <div className="container mt-4">
                 <div className="row">
                     <div className="col-3 text-left" onChange={this.onChangeContentRadio}>
                         <div className="col-12">
-                            <input type="radio" value="noContent" name="contentRadios" /> No Content
+                            <input type="radio" value="noContent" name="contentRadios"
+                                   checked={this.state.noContentOption} /> No Content
                         </div>
                         <div className="col-12">
-                            <input type="radio" value="withContent" name="contentRadios" /> With Content
+                            <input type="radio" value="withContent" name="contentRadios"
+                                   checked={!this.state.noContentOption} /> With Content
                         </div>
                         <div className="col-12 mt-3 form-group">
                             <label
-                                htmlFor="selectCategory"
+                                htmlFor="selectFilterCategory"
                             >Category</label>
-                            <select className="form-control" id="selectCategory">
+                            <select
+                                className="col-12 form-control" id="selectFilterCategory"
+                                value={this.state.selectedCategoryName}
+                                onChange={this.onChangeCategory}
+                            >
                                 <option value="">Please select</option>
                                 {Object.entries(this.state.categories).map(([key, value], i) => {
                                     return (
@@ -139,6 +205,8 @@ export default class Articles extends Component {
                                     title={value.title}
                                     content={value.content}
                                     description={value.description}
+                                    category_name={value.category_name}
+                                    selectedCategoryName={this.state.selectedCategoryName}
                                     onDeleteArticle={this.onDeleteArticle}
                                 />
                             )
