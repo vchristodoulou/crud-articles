@@ -9,8 +9,16 @@ class ArticleService {
         return axios.get(`${API_URL}articles/`);
     }
 
+    getWithCategory(category) {
+        return axios.get(`${API_URL}articles?category=${category}`);
+    }
+
     getWithContent() {
-        return axios.get(`${API_URL}articles/?content=true`);
+        return axios.get(`${API_URL}articles?content=true`);
+    }
+
+    getWithContentAndCategory(category) {
+        return axios.get(`${API_URL}articles?content=true&category=${category}`);
     }
 
     getById(id) {
