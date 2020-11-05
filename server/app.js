@@ -19,7 +19,7 @@ const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/blog';
 mongoose.connect(dbUrl, {useNewUrlParser: true, useUnifiedTopology: true})
     .then(
         () => {
-            console.log('Database sucessfully connected!')
+            console.log(`Database sucessfully connected! ${dbUrl}`)
         },
         error => {
             console.log('Could not connect to database : ' + error)
@@ -37,7 +37,12 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "build")));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// app.use((req, res, next) => {
+//     res.sendFile(path.join(__dirname, "build", "index.html"));
+// });
 
 app.use('/', indexRouter);
 app.use('/api/articles', articlesRouter);
