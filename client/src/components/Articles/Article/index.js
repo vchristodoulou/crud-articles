@@ -49,17 +49,16 @@ export default class Article extends Component {
                 { ((category_name === selectedCategoryName) || (selectedCategoryName === ''))  &&
                     <div className="card mb-4 box-shadow">
                         <div className="card-header">
-                            <h5>{title}</h5>
-                            <p className="text-right">{category_name}</p>
+                            <h4>{title}</h4>
+                            <p className="category_name mt-3">{category_name}</p>
                         </div>
                         <div className="card-body">
                             <small className="card-text">{description}</small>
                             <hr/>
                             <p>{content}</p>
-                            <div className="d-flex justify-content-between align-items-center">
-                                <div className="btn-group">
+                            <div className="d-flex align-items-center">
                                     <div className="dropdown">
-                                        <button className="tn btn-sm btn-outline-secondary dropdown-toggle"
+                                        <button className="btn btn-sm btn-outline-secondary dropdown-toggle mr-2"
                                                 type="button"
                                                 id="dropdownView" data-toggle="dropdown" aria-haspopup="true"
                                                 aria-expanded="false">
@@ -80,13 +79,14 @@ export default class Article extends Component {
                                             >BY TITLE (with content)</Link>
                                         </div>
                                     </div>
-                                    <Link className="btn btn-sm btn-outline-secondary" type="button"
+
+                                    <Link className="btn btn-sm btn-outline-secondary mr-2 ml-auto" type="button"
                                           to={`/articles/edit/${title}`}
                                     >Edit
                                     </Link>
 
                                     <div className="dropdown">
-                                        <button className="tn btn-sm btn-outline-secondary dropdown-toggle"
+                                        <button className="tn btn-sm btn-danger dropdown-toggle"
                                                 type="button"
                                                 id="dropdownDelete" data-toggle="dropdown" aria-haspopup="true"
                                                 aria-expanded="false">
@@ -100,7 +100,6 @@ export default class Article extends Component {
                                             >By Title
                                             </button>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
