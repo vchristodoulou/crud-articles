@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import ArticleService from "../../../services/article.service";
+import CategoryService from "../../../services/category.service";
 
 
 export default class ArticleCreate extends Component {
@@ -11,6 +12,8 @@ export default class ArticleCreate extends Component {
             title: '',
             content: '',
             description: '',
+            category_name: '',
+            categories: [],
             createResponse: '',
             error: ''
         };
@@ -18,6 +21,7 @@ export default class ArticleCreate extends Component {
         this.handleChangeTitle = this.handleChangeTitle.bind(this);
         this.handleChangeContent = this.handleChangeContent.bind(this);
         this.handleChangeDescription = this.handleChangeDescription.bind(this);
+        this.handleChangeCategory = this.handleChangeCategory.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -33,15 +37,20 @@ export default class ArticleCreate extends Component {
         this.setState({description: event.target.value});
     }
 
+    handleChangeCategory(event) {
+        this.setState({category_name: event.target.value});
+    }
+
     handleSubmit(event) {
-        console.log(event);
         let newArticle;
+
         if (this.state.description) {
-            newArticle = {title: this.state.title, content: this.state.content, description: this.state.description};
+            newArticle = {title: this.state.title, content: this.state.content,
+                description: this.state.description, category_name: this.state.category_name};
         } else {
-            newArticle = {title: this.state.title, content: this.state.content};
+            newArticle = {title: this.state.title, content: this.state.content,
+                category_name: this.state.category_name};
         }
-        console.log(newArticle);
         event.preventDefault();
 
         ArticleService.create(newArticle).then(
@@ -50,6 +59,7 @@ export default class ArticleCreate extends Component {
                     title: '',
                     content: '',
                     description: '',
+                    category_name: '',
                     createResponse: 'SUCCESS'
                 });
                 setTimeout(
@@ -73,6 +83,32 @@ export default class ArticleCreate extends Component {
                 );
             }
         );
+    }
+
+    getCategories() {
+        CategoryService.get()
+            .then(
+                response => {
+                    // console.log(response.data);
+                    this.setState({
+                        categories: response.data
+                    });
+                },
+                error => {
+                    this.setState({
+                        error:
+                            (error.response &&
+                                error.response.data &&
+                                error.response.data.message) ||
+                            error.message ||
+                            error.toString()
+                    });
+                }
+            );
+    }
+
+    componentDidMount() {
+        this.getCategories();
     }
 
     render() {
@@ -112,6 +148,24 @@ export default class ArticleCreate extends Component {
                                         <textarea
                                             className="form-control col-8" id="create_description" rows="3"
                                             value={this.state.description} onChange={this.handleChangeDescription} />
+                                    </div>
+                                    <div className="form-group row">
+                                        <label
+                                            className="col-3 col-form-label form-control-label"
+                                            htmlFor="selectCategoryCreateArticle"
+                                        >Category</label>
+                                        <select
+                                            className="form-control col-8" id="selectCategoryCreateArticle"
+                                            value={this.state.category_name}
+                                            onChange={this.handleChangeCategory}
+                                        >
+                                            <option value="">Please select</option>
+                                            {Object.entries(this.state.categories).map(([key, value], i) => {
+                                                return (
+                                                    <option key={value._id}>{value.name}</option>
+                                                )
+                                            })}
+                                        </select>
                                     </div>
                                     <button className="btn btn-primary mt-2" type="submit">Submit</button>
                                     {this.state.createResponse === 'SUCCESS' &&
