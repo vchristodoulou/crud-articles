@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 import Articles from "./components/Articles"
 import ArticleCreate from "./components/Articles/create";
-import ArticleView from "./components/Articles/view";
+import { ArticleView, ArticleViewByTitle } from "./components/Articles/view";
 import ArticleEdit from "./components/Articles/edit";
 import CategoryCreate from "./components/Categories/create";
 import CategoryDelete from "./components/Categories/delete";
@@ -46,7 +46,8 @@ class App extends Component {
             </nav>
 
             <Route exact path={["/", "/articles"]} component={Articles}/>
-            <Route exact path={["/articles/:articleId"]} component={ArticleView}/>
+            <Route exact path={["/articles/:id"]} component={ArticleView}/>
+            <Route exact path={["/articles/title/:title"]} component={ArticleViewByTitle}/>
             <Route exact path={["/articles/edit/:title"]} component={ArticleEdit}/>
             <Route exact path={["/admin/create_article"]} component={ArticleCreate}/>
             <Route exact path={["/admin/create_category"]} component={CategoryCreate}/>
