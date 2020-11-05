@@ -12,6 +12,7 @@ export default class ArticleEdit extends Component {
             title: '',
             content: '',
             description: '',
+            category_name: '',
             editResponse: '',
             error: ''
         };
@@ -31,12 +32,12 @@ export default class ArticleEdit extends Component {
         ArticleService.edit(title, this.state.content)
             .then(
                 response => {
-                    console.log(response);
                     this.setState({
                         id: response.data._id,
                         title: response.data.title,
                         content: response.data.content,
                         description: response.data.description,
+                        category_name: response.data.category_name,
                         editResponse: 'SUCCESS'
                     });
                     setTimeout(
@@ -65,7 +66,6 @@ export default class ArticleEdit extends Component {
 
     componentDidMount() {
         const { title } = this.props.match.params;
-        console.log(title);
 
         ArticleService.getByTitleWithContent(title)
             .then(
@@ -77,12 +77,12 @@ export default class ArticleEdit extends Component {
     getArticleSuccess() {
         return (
             response => {
-                console.log(response);
                 this.setState({
                     id: response.data[0]._id,
                     title: response.data[0].title,
                     content: response.data[0].content,
-                    description: response.data[0].description
+                    description: response.data[0].description,
+                    category_name: response.data[0].category_name
                 });
             }
         )
@@ -106,26 +106,37 @@ export default class ArticleEdit extends Component {
     render() {
         return (
             <div className="container">
-                <h1>{this.state.title}</h1>
-                <small>{this.state.description}</small>
-                <hr/>
-                <form onSubmit={this.handleEditSubmit}>
-                    <div className="form-group">
-                        <textarea className="form-control" rows="10"
-                                  value={this.state.content} onChange={this.handleChangeContent} />
+                <div className="row">
+                    <div className="col-12">
+                        <h1>{this.state.title}</h1>
                     </div>
-                    <button className="btn btn-primary" type="submit">Save</button>
-                    {this.state.editResponse === 'SUCCESS' &&
-                        <div className="alert alert-success alert-dismissible fade show mt-2" role="alert">
-                            <p className="text-center">Saved successfully!</p>
+                    <div className="col-12">
+                        <p className="text-right">{this.state.category_name}</p>
+                    </div>
+                    <div className="col-12">
+                        <small>{this.state.description}</small>
+                    </div>
+                    <div className="col-12">
+                        <hr/>
+                    </div>
+                    <form className="col-12" onSubmit={this.handleEditSubmit}>
+                        <div className="form-group">
+                            <textarea className="form-control" rows="10"
+                                      value={this.state.content} onChange={this.handleChangeContent} />
                         </div>
-                    }
-                    {this.state.editResponse === 'ERROR' &&
-                        <div className="alert alert-danger alert-dismissible fade show mt-2" role="alert">
-                            <p className="text-center">{this.state.error}</p>
-                        </div>
-                    }
-                </form>
+                        <button className="btn btn-primary" type="submit">Save</button>
+                        {this.state.editResponse === 'SUCCESS' &&
+                            <div className="alert alert-success alert-dismissible fade show mt-2" role="alert">
+                                <p className="text-center">Saved successfully!</p>
+                            </div>
+                        }
+                        {this.state.editResponse === 'ERROR' &&
+                            <div className="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+                                <p className="text-center">{this.state.error}</p>
+                            </div>
+                        }
+                    </form>
+                </div>
             </div>
         );
     }
