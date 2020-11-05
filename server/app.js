@@ -4,17 +4,19 @@ const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
-const cors = require('cors')
+const cors = require('cors');
 
-const dbConfig = require('./database/db')
 const indexRouter = require('./routes/index');
-const articlesRouter = require('./routes/article.route')
-const categoryRouter = require('./routes/category.route')
+const articlesRouter = require('./routes/article.route');
+const categoryRouter = require('./routes/category.route');
+
+require('dotenv').config()
 
 
 // Connecting to mongoDB Database
 mongoose.Promise = global.Promise;
-mongoose.connect(dbConfig.db, {useNewUrlParser: true, useUnifiedTopology: true})
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/blog';
+mongoose.connect(dbUrl, {useNewUrlParser: true, useUnifiedTopology: true})
     .then(
         () => {
             console.log('Database sucessfully connected!')
